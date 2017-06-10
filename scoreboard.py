@@ -17,6 +17,10 @@ class Scoreboard():
 		self.font = pygame.font.SysFont(None, 48)
 		
 		# Prepare the initial score image.
+		self.prep_images()
+		
+	def prep_images(self):
+		"""Consolidate image prep method calls."""
 		self.prep_score()
 		self.prep_high_score()
 		self.prep_level()
@@ -62,7 +66,7 @@ class Scoreboard():
 		self.ships = Group()
 		for ship_number in range(self.stats.ships_left):
 			ship = Ship(self.game_settings, self.screen)
-			ship.rect.x = 10 + ship_number * ship.rect.width
+			ship.rect.x = 10 + ship_number * (ship.rect.width+5)
 			ship.rect.y = 10
 			self.ships.add(ship)
 

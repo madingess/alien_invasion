@@ -112,16 +112,23 @@ def start_game(game_settings, screen, stats, sb, ship, aliens, bullets):
 	stats.reset_stats()
 	stats.game_active = True
 	# Reset the scoreboard images.
-	sb.prep_score()
-	sb.prep_high_score()
-	sb.prep_level()
-	sb.prep_ships()
+	sb.prep_images()
 	# Empty the list of aliens and bullets.
 	aliens.empty()
 	bullets.empty()
 	# Create a new fleet and center the ship.
 	create_fleet(game_settings, screen, ship, aliens)
 	ship.center_ship()
+	
+def start_new_level(game_settings, screen, stats, sb, ship, aliens,
+		bullets):
+	"""Start a new level."""
+	bullets.empty()
+	game_settings.increase_speed()
+	create_fleet(game_settings, screen, ship, aliens)
+	# Increase level.
+	stats.level += 1
+	sb.prep_level()
 			
 def fire_bullet(game_settings, screen, ship, bullets):
 	"""Fire a bullet if limit not reached yet."""
@@ -175,15 +182,10 @@ def check_bullet_alien_collisions(game_settings, screen, stats, sb,
 			stats.score += game_settings.alien_points * len(aliens)
 			sb.prep_score()
 		check_high_score(stats, sb)
-		
+	# If the entire fleet is destroyed, start a new level.
 	if len(aliens) == 0:
-		# If the entire fleet is destroyed, start a new level.
-		bullets.empty()
-		game_settings.increase_speed()
-		create_fleet(game_settings, screen, ship, aliens)
-		# Increase level.
-		stats.level += 1
-		sb.prep_level()
+		start_new_level(game_settings, screen, stats, sb, ship, aliens,
+			bullets)
 
 def ship_hit(game_settings, stats, screen, sb, ship, aliens, bullets):
 	"""Respond to ship being hit by alien."""
