@@ -64,8 +64,13 @@ def check_keydown_events(event, game_settings, screen, stats, sb, ship,
 	elif event.key == pygame.K_q:
 		stats.write_high_score(stats.high_score)
 		sys.exit()
-	elif event.key == pygame.K_p and not stats.game_active:
+	elif event.key == pygame.K_s and not stats.game_active:
 		start_game(game_settings, screen, stats, sb, ship, aliens, bullets)
+	elif event.key == pygame.K_p:
+		if stats.game_pause == True:
+			stats.game_pause = False
+		else:
+			stats.game_pause = True
 	elif event.key == pygame.K_r:
 		stats.game_active = False
 		pygame.mouse.set_visible(True)
@@ -104,6 +109,8 @@ def check_play_button(game_settings, screen, stats, sb, play_button, ship, alien
 		
 def start_game(game_settings, screen, stats, sb, ship, aliens, bullets):
 	"""Start a new game."""
+	# Unpause if paused
+	stats.game_pause = False
 	# Reset the game settings.
 	game_settings.initialize_dynamic_settings()
 	# Hide the mouse cursor.
