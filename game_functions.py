@@ -62,6 +62,7 @@ def check_keydown_events(event, game_settings, screen, stats, sb, ship,
 	elif event.key == pygame.K_SPACE:
 		fire_bullet(game_settings, screen, ship, bullets)
 	elif event.key == pygame.K_q:
+		stats.write_high_score(stats.high_score)
 		sys.exit()
 	elif event.key == pygame.K_p and not stats.game_active:
 		start_game(game_settings, screen, stats, sb, ship, aliens, bullets)
