@@ -3,6 +3,7 @@ from time import sleep
 import pygame
 from bullet import Bullet
 from alien import Alien
+from random import choice
 
 def get_number_aliens_x(game_settings, alien_width):
 	"""Determine the number of aliens that fin in a row."""
@@ -143,6 +144,7 @@ def fire_bullet(game_settings, screen, ship, bullets):
 	if len(bullets) < game_settings.bullets_allowed:
 		new_bullet = Bullet(game_settings, screen, ship)
 		bullets.add(new_bullet)
+		sound_bullet_fired(game_settings)
 		
 def update_screen(game_settings, screen, backdrop, stats, sb, ship, aliens, bullets, 
 	play_button):
@@ -189,6 +191,7 @@ def check_bullet_alien_collisions(game_settings, screen, stats, sb,
 			stats.score += game_settings.alien_points * len(aliens)
 			sb.prep_score()
 		check_high_score(stats, sb)
+		sound_bullet_hit(game_settings)
 	# If the entire fleet is destroyed, start a new level.
 	if len(aliens) == 0:
 		start_new_level(game_settings, screen, stats, sb, ship, aliens,
@@ -234,5 +237,13 @@ def update_aliens(game_settings, stats, screen, sb, ship, aliens, bullets):
 		ship_hit(game_settings, stats, screen, sb, ship, aliens, bullets)
 	# Look for aliens at the bottom of the screen.
 	check_aliens_bottom(game_settings, stats, screen, sb, ship, aliens, bullets)
-	
-	
+
+def sound_bullet_hit(game_settings):
+	"""Select and play alien hit soundfile."""
+	soundfile = choice(game_settings.bullet_hit_sounds)
+	pygame.mixer.Sound(soundfile)
+ 
+def sound_bullet_fired(game_settings):
+	"""Select and play bullet fired soundfile."""
+	soundfile = choice(game_settings.bullet_fire_sounds)
+	pygame.mixer.Sound(soundfile)

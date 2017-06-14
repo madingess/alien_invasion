@@ -17,6 +17,14 @@ class Settings():
 		self.bullet_height = 15
 		self.bullet_color = 60, 60, 60
 		self.bullets_allowed = 3
+		
+		# Sounds
+		self.bg_sound = 'audio/dootdoot.wav'
+		self.bullet_fire_sounds = ['audio/pew1.wav', 'audio/pew2.wav',
+			'audio/pew3.wav']
+		self.bullet_hit_sounds = ['audio/blam1.wav', 'audio/blam2.wav',
+			'audio/blam3.wav']
+		#self.ship_hit = 'shiphitfile.wav'
 
 		# Alien Settings
 		self.fleet_drop_speed = 10
