@@ -1,3 +1,5 @@
+import pygame
+
 class Settings():
 	"""A class to store all settings for Alien Invasion."""
 	
@@ -6,7 +8,7 @@ class Settings():
 		# Screen settings
 		self.screen_width = 1200
 		self.screen_height = 800
-		self.bg_color = (230, 230, 230)
+		self.bg_color = (230, 230, 230)  # Grey
 		
 		# Ship settings
 		self.ship_limit = 3
@@ -39,7 +41,7 @@ class Settings():
 		
 		# Easy mode settings
 		self.easy_mode = False
-		self.bullet_width = 3
+		self.bullet_width = 5
 		self.bullet_phase = True  # True means bullets disappear on hits
 
 	def increase_speed(self):
@@ -53,7 +55,7 @@ class Settings():
 	def toggle_easy_mode(self):
 		"""Toggle easy mode on/off."""
 		if self.easy_mode:
-			self.bullet_width = 3
+			self.bullet_width = 5
 			self.bullet_phase = True
 			self.easy_mode = False
 		else:

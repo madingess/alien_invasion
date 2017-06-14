@@ -144,11 +144,11 @@ def fire_bullet(game_settings, screen, ship, bullets):
 		new_bullet = Bullet(game_settings, screen, ship)
 		bullets.add(new_bullet)
 		
-def update_screen(game_settings, screen, stats, sb, ship, aliens, bullets, 
+def update_screen(game_settings, screen, backdrop, stats, sb, ship, aliens, bullets, 
 	play_button):
 	"""Update images on the screen and flip to the new screen."""
 	# Redraw the screen during each pass through the loop
-	screen.fill(game_settings.bg_color)
+	backdrop.blitme()
 	# Redraw all bullets behind ship and aliens.
 	for bullet in bullets.sprites():
 		bullet.draw_bullet()
