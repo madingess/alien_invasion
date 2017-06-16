@@ -26,8 +26,6 @@ Create currency location in scoreboard
 
 Implement different alien ship types and attributes
 
-Implement alien shooting capabilities
-
 Redesign difficulty scaling for different worlds, levels, and aliens
 
 Create and Test sounds for shots and hits

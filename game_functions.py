@@ -77,6 +77,9 @@ def check_keydown_events(event, game_settings, screen, stats, sb, ship,
 		pygame.mouse.set_visible(True)
 	elif event.key == pygame.K_e:
 		stats.game_settings.toggle_easy_mode()
+	elif event.key == pygame.K_f:
+		for alien in aliens:
+			fire_bullet(game_settings, screen, alien, bullets, playerFired=False)
 
 def check_keyup_events(event, ship):
 	"""Respond to key releases."""
@@ -144,7 +147,7 @@ def fire_bullet(game_settings, screen, sprite, bullets, playerFired):
 	"""Fire a bullet if limit not reached yet."""
 	# Create a bullet and add it to the bullets group.
 	if not playerFired: 
-		new_bullet = Bullet(game_settings, screen, sprite, True)
+		new_bullet = Bullet(game_settings, screen, sprite, False)
 		bullets[1].add(new_bullet)
 		sound_bullet_fired(game_settings)
 	elif len(bullets[0]) < game_settings.bullets_allowed:
@@ -224,7 +227,8 @@ def ship_hit(game_settings, stats, screen, sb, ship, aliens, bullets):
 		sb.prep_ships()
 		# Empty the list of aliens and bullets.
 		aliens.empty()
-		bullets.empty()
+		bullets[0].empty()
+		bullets[1].empty()
 		# Create a new fleet and center the ship.
 		create_fleet(game_settings, screen, ship, aliens)
 		ship.center_ship()
