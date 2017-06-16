@@ -26,7 +26,8 @@ def run_game():
 	
 	# Make a ship, a group of bullets, and a group of aliens.
 	ship = Ship(game_settings, screen)
-	bullets = Group()
+	bullets = [Group(), Group()]
+	  #First group for player bullets, second for alien bullets
 	aliens = Group()
 	
 	# Create the fleet of aliens.

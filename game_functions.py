@@ -61,7 +61,7 @@ def check_keydown_events(event, game_settings, screen, stats, sb, ship,
 	elif event.key == pygame.K_LEFT:
 		ship.moving_left = True
 	elif event.key == pygame.K_SPACE:
-		fire_bullet(game_settings, screen, ship, bullets)
+		fire_bullet(game_settings, screen, ship, bullets, playerFired=True)
 	elif event.key == pygame.K_q:
 		stats.write_high_score(stats.high_score)
 		sys.exit()
@@ -123,7 +123,8 @@ def start_game(game_settings, screen, stats, sb, ship, aliens, bullets):
 	sb.prep_images()
 	# Empty the list of aliens and bullets.
 	aliens.empty()
-	bullets.empty()
+	bullets[0].empty()
+	bullets[1].empty()
 	# Create a new fleet and center the ship.
 	create_fleet(game_settings, screen, ship, aliens)
 	ship.center_ship()
@@ -131,19 +132,24 @@ def start_game(game_settings, screen, stats, sb, ship, aliens, bullets):
 def start_new_level(game_settings, screen, stats, sb, ship, aliens,
 		bullets):
 	"""Start a new level."""
-	bullets.empty()
+	bullets[0].empty()
+	bullets[1].empty()
 	game_settings.increase_speed()
 	create_fleet(game_settings, screen, ship, aliens)
 	# Increase level.
 	stats.level += 1
 	sb.prep_level()
 			
-def fire_bullet(game_settings, screen, ship, bullets):
+def fire_bullet(game_settings, screen, sprite, bullets, playerFired):
 	"""Fire a bullet if limit not reached yet."""
 	# Create a bullet and add it to the bullets group.
-	if len(bullets) < game_settings.bullets_allowed:
-		new_bullet = Bullet(game_settings, screen, ship)
-		bullets.add(new_bullet)
+	if not playerFired: 
+		new_bullet = Bullet(game_settings, screen, sprite, True)
+		bullets[1].add(new_bullet)
+		sound_bullet_fired(game_settings)
+	elif len(bullets[0]) < game_settings.bullets_allowed:
+		new_bullet = Bullet(game_settings, screen, sprite, True)
+		bullets[0].add(new_bullet)
 		sound_bullet_fired(game_settings)
 		
 def update_screen(game_settings, screen, backdrop, stats, sb, ship, aliens, bullets, 
@@ -152,8 +158,9 @@ def update_screen(game_settings, screen, backdrop, stats, sb, ship, aliens, bull
 	# Redraw the screen during each pass through the loop
 	backdrop.blitme()
 	# Redraw all bullets behind ship and aliens.
-	for bullet in bullets.sprites():
-		bullet.draw_bullet()
+	for bulletType in bullets:
+		for bullet in bulletType.sprites():
+			bullet.draw_bullet()
 	ship.blitme()
 	aliens.draw(screen)
 	# Draw the score information
@@ -167,12 +174,16 @@ def update_screen(game_settings, screen, backdrop, stats, sb, ship, aliens, bull
 
 def update_bullets(game_settings, screen, stats, sb, ship, aliens, bullets):
 	"""Update the position of bullets and get rid of old bullets."""
-	bullets.update()
-	# Remove bullets that hit the top
-	for bullet in bullets.copy():
-		if bullet.rect.bottom <= 0:
-			bullets.remove(bullet)
+	bullets[0].update()
+	bullets[1].update()
+	# Remove bullets that hit the top or bottom
+	for bulletType in bullets:
+		for bullet in bulletType.copy():
+			if bullet.rect.bottom <= 0 or bullet.rect.top >= game_settings.screen_height:
+				bulletType.remove(bullet)
 	check_bullet_alien_collisions(game_settings, screen, stats, sb, 
+		ship, aliens, bullets)
+	check_bullet_ship_collisions(game_settings, stats, screen, sb, 
 		ship, aliens, bullets)
 		
 def check_high_score(stats, sb):
@@ -184,7 +195,7 @@ def check_high_score(stats, sb):
 def check_bullet_alien_collisions(game_settings, screen, stats, sb, 
 	ship, aliens, bullets):
 	"""Respond to bullet-alien collisions."""
-	collisions = pygame.sprite.groupcollide(bullets, aliens, 
+	collisions = pygame.sprite.groupcollide(bullets[0], aliens, 
 		game_settings.bullet_phase, True)
 	if collisions:
 		for aliens in collisions.values():
@@ -196,6 +207,13 @@ def check_bullet_alien_collisions(game_settings, screen, stats, sb,
 	if len(aliens) == 0:
 		start_new_level(game_settings, screen, stats, sb, ship, aliens,
 			bullets)
+			
+def check_bullet_ship_collisions(game_settings, stats, screen, sb, ship,
+	aliens, bullets):
+	"""Respond to bullet-ship collisions."""
+	# Look for alien-ship collisions.
+	if pygame.sprite.spritecollideany(ship, bullets[1]):
+		ship_hit(game_settings, stats, screen, sb, ship, aliens, bullets)
 
 def ship_hit(game_settings, stats, screen, sb, ship, aliens, bullets):
 	"""Respond to ship being hit by alien."""
